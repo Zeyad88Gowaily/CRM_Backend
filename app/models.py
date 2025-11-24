@@ -1,0 +1,25 @@
+'''
+Models to Implement:
+    User
+        username
+        email
+        hashed_password
+        created_at
+    Contact
+        name
+        phone
+        email
+        company_id
+        notes
+    Company
+        name
+        industry
+        address
+    Deal
+        title
+        amount
+        stage
+        expected_close_date
+        contact_id
+        user_id
+'''
