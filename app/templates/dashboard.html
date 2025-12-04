@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{pagetitle}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <ul style="color:green;">
+            {% for msg in messages %}
+                <li>{{ msg }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
+
+
+    <h1>Dashboard</h1>
+    <p>Welcome To Our CRM Dashboard</p>
+
+    <nav>
+        <a href="/dashboard/users">Users</a>
+        <a href="/dashboard/contacts">Contacts</a>
+        <a href="/dashboard/companies">Companies</a>
+        <a href="/dashboard/deals">Deals</a>
+        <a href="/login">Logout</a>
+
+    </nav>
+    
+</body>
+</html>

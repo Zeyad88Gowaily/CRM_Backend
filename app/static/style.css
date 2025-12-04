@@ -1,0 +1,93 @@
+/* ===== RESET ===== */
+body, h1, h2, p, ul, li, a, input, button {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f5f6fa;
+    padding: 40px;
+    color: #333;
+    text-align: center;
+}
+
+/* ===== FLASH MESSAGES ===== */
+ul {
+    list-style: none;
+    margin-bottom: 20px;
+}
+
+ul li {
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+/* ===== HEADINGS ===== */
+h1, h2 {
+    margin-bottom: 20px;
+}
+
+/* ===== FORMS ===== */
+form {
+    background: white;
+    padding: 20px;
+    margin: 0 auto;
+    width: 280px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background: #3498db;
+    border: none;
+    color: white;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background: #2980b9;
+}
+
+/* ===== NAV BAR ===== */
+nav {
+    margin-top: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    margin: 0 10px;
+    padding: 8px 14px;
+    background: #3498db;
+    color: white;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+nav a:hover {
+    background: #2980b9;
+}
+
+/* ===== LINKS ===== */
+p a {
+    color: #3498db;
+    text-decoration: none;
+}
+
+p a:hover {
+    text-decoration: underline;
+}
