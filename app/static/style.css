@@ -91,3 +91,75 @@ p a {
 p a:hover {
     text-decoration: underline;
 }
+
+/* ===== CONTAINERS (DIVS) ===== */
+div {
+    background: #ffffff;
+    padding: 20px;
+    margin: 20px auto;
+    width: 320px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* ===== FORMS INSIDE DIVS ===== */
+div form {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== INPUTS ===== */
+div input {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* ===== BUTTON ===== */
+div button {
+    padding: 10px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+div button:hover {
+    background: #2980b9;
+}
+
+/* ===== LINKS ===== */
+div a {
+    margin-top: 10px;
+    text-align: center;
+    display: block;
+    color: #3498db;
+    text-decoration: none;
+}
+
+div a:hover {
+    text-decoration: underline;
+}
+
+.pagination a {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+  }
+  .pagination a:hover {
+    background: #2980b9;
+  }
+  .pagination strong {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background: #ccc;
+    border-radius: 5px;
+  }
+  

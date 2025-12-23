@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{pagetitle}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Companies</h1>
+
+    <div>
+        <h1>Search Companies</h1>
+    <form method="get">
+        <input name="q" placeholder="Search">
+        <button type="submit">Search</button>
+        <a href="{{url_for('dashboard')}}">Back</a>
+    </form>
+    </div>
+            
+    <div>
+        <h1>Create Company</h1>
+        <form method="post" action="{{url_for('create_company_route')}}">
+            <input name="name" placeholder="Name">
+            <input name="industry" placeholder="Industry">
+            <input name="address" placeholder="Address">
+            <button type="submit">Create</button>
+            <a href="{{url_for('dashboard')}}">Back</a>
+        </form>
+    </div>
+
+    <div>
+        <h1>Update Company</h1>
+        <form method="post" action="{{url_for('update_company_route')}}">
+            <input name="company_id" placeholder="Company ID to Update">
+            <input name="name" placeholder="Name">
+            <input name="industry" placeholder="Industry">
+            <input name="address" placeholder="Address">
+            <button type="submit">Update</button>
+        </form>
+    </div>
+
+    <div>
+        <h1>Delete Company</h1>
+        <form method="post" action="{{url_for('delete_company_route')}}">
+            <input name="company_id" placeholder="Company ID to Delete">
+            <button type="submit">Delete</button>
+        </form>
+    </div>
+
+    <div class="pagination">
+        {% if page > 1 %}
+          <a href="{{ url_for('companies', page=page-1, q=query) }}">Previous</a>
+        {% endif %}
+      
+        {% if page < total_pages %}
+          <a href="{{ url_for('companies', page=page+1, q=query) }}">Next</a>
+        {% endif %}
+    </div>
+
+    <ul>
+        {% for company in companies %}
+            <li>
+                ID: {{ company[0]}} __ 
+                Name: {{ company[1]}} __ 
+                Industry: {{ company[2]}} __ 
+                Address: {{ company[3]}}
+            </li>
+        {% endfor%}    
+    </ul>
+    
+</body>
+</html>

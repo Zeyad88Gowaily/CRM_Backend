@@ -41,7 +41,7 @@ def login():
         
     return render_template("login.html",pagetitle = "Login Page")
 
-# REGI`STER
+# REGIISTER
 @crm_app.route("/register", methods=["GET","POST"])
 def register():
     if request.method=="POST":
@@ -72,3 +72,5 @@ def register():
 @crm_app.route("/dashboard")
 def dashboard():
     return render_template("dashboard.html",pagetitle = "Dashboard")
+
+

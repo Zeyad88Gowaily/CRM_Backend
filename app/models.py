@@ -28,7 +28,7 @@ def read_user():
 def read_user_byID(user_ID):
     conn=get_connection()
     cursor=conn.cursor()
-    Data=cursor.execute("""SELECT * FROM users WHERE ID=?""",(user_ID)).fetchone()
+    Data=cursor.execute("""SELECT * FROM users WHERE ID=?""",(user_ID,)).fetchone() #
     conn.close()
     
     return Data
@@ -48,7 +48,7 @@ def update_user(user_ID,username,email):
 def delete_user(user_ID):
     conn=get_connection()
     cursor=conn.cursor()
-    cursor.execute("""DELETE FROM users WHERE ID = ?""",(user_ID))
+    cursor.execute("""DELETE FROM users WHERE ID = ?""",(user_ID,)) #
     conn.commit()
     conn.close()
     
@@ -82,7 +82,7 @@ def read_company():
 def read_company_byID(company_ID):
     conn=get_connection()
     cursor=conn.cursor()
-    Data=cursor.execute("""SELECT * FROM companies WHERE ID=?""",(company_ID)).fetchone()
+    Data=cursor.execute("""SELECT * FROM companies WHERE ID=?""",(company_ID,)).fetchone() #
     conn.close()
     
     return Data
@@ -102,7 +102,7 @@ def update_company(name,industry,address,company_ID):
 def delete_company(company_ID):  
     conn=get_connection()
     cursor=conn.cursor()
-    cursor.execute("""DELETE FROM companies WHERE ID = ?""",(company_ID))
+    cursor.execute("""DELETE FROM companies WHERE ID = ?""",(company_ID,)) #
     conn.commit()
     conn.close()
     
@@ -136,10 +136,20 @@ def read_contact():
 def read_contact_byID(contact_ID):
     conn=get_connection()
     cursor=conn.cursor()
-    Data=cursor.execute("""SELECT * FROM contacts WHERE ID=?""",(contact_ID)).fetchone()
+    Data=cursor.execute("""SELECT * FROM contacts WHERE ID=?""",(contact_ID,)).fetchone() #
     conn.close()
     
     return Data
+
+# NEW Added Read Contacts By Company ID  **Phase 2 requirement**
+def read_contacts_by_company(company_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    Data = cursor.execute(""" SELECT * FROM contacts WHERE company_id = ?""", (company_id,)).fetchall() #
+    conn.close()
+    
+    return Data
+
 
 # UPDATE
 def update_contact(name,phone,email,company_id,notes,contact_ID):  
@@ -158,11 +168,12 @@ def update_contact(name,phone,email,company_id,notes,contact_ID):
 def delete_contact(contact_ID):  
     conn=get_connection()
     cursor=conn.cursor()
-    cursor.execute("""DELETE FROM contacts WHERE ID = ?""",(contact_ID))
+    cursor.execute("""DELETE FROM contacts WHERE ID = ?""",(contact_ID,)) #
     conn.commit()
     conn.close()
     
     return True
+
 #################################################################################################################################################################################
 
 # Deal Table CRUD
@@ -191,7 +202,17 @@ def read_deal():
 def read_deal_byID(deal_ID):
     conn=get_connection()
     cursor=conn.cursor()
-    Data=cursor.execute("""SELECT * FROM deals WHERE ID=?""",(deal_ID)).fetchone()
+    Data=cursor.execute("""SELECT * FROM deals WHERE ID=?""",(deal_ID,)).fetchone() #
+    conn.close()
+    
+    return Data
+
+
+# NEW Added Read Contacts By Company ID  **Phase 2 requirement**
+def read_deals_by_contacts(contact_id):
+    conn = get_connection()
+    cursor = conn.cursor()
+    Data = cursor.execute(""" SELECT * FROM deals WHERE contact_id = ?""", (contact_id,)).fetchall() #
     conn.close()
     
     return Data
@@ -214,9 +235,42 @@ def update_deal(title,amount,stage,expected_close_date,contact_id,user_id,deal_I
 def delete_deal(deal_ID):  
     conn=get_connection()
     cursor=conn.cursor()
-    cursor.execute("""DELETE FROM contacts WHERE ID = ?""",(deal_ID))
+    cursor.execute("""DELETE FROM deals WHERE ID = ?""",(deal_ID,)) #
     conn.commit()
     conn.close()
     
     return True
+
+
+
+#########################################################################################################################################################################
+
+def general_search(table,query):
+    
+    """
+    table: 'contacts', 'companies', 'deals', 'users'
+    query: Search Keyword
+    """
+
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    if table == "contacts":
+        cursor.execute("SELECT * FROM contacts WHERE name LIKE ?",(f"%{query}%",)) # 
+    elif table == "companies":
+        cursor.execute("SELECT * FROM companies WHERE name LIKE ?",(f"%{query}%",)) # 
+    elif table == "deals":
+        cursor.execute("SELECT * FROM deals WHERE title LIKE ?",(f"%{query}%",)) # 
+    elif table == "users":
+        cursor.execute("SELECT * FROM users WHERE username LIKE ?",(f"%{query}%",)) # 
+    else:
+        raise ValueError("Invalid Table")
+    
+    Data = cursor.fetchall()
+    conn.close()
+    
+    return Data
+                      
+
+
 

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{pagetitle}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Deals</h1>
+    <div>
+        <form method="get">
+            <input name="q" placeholder="Search">
+            <button type="submit">Search</button>
+            <a href="{{url_for('dashboard')}}">Back</a>
+        </form>
+    </div>
+
+    <div>
+        <h1>Create Deal</h1>
+        <form method="post", action="{{url_for('create_deal_route')}}">
+            <input name="title" placeholder="Title">
+            <input name="amount" placeholder="Amount">
+            <input name="stage" placeholder="Stage">
+            <input name="expected_close_date" placeholder="Close Date">
+            <input name="contact_id" placeholder="Contact ID">
+            <input name="user_id" placeholder="User ID">
+            <button type="submit">Create</button>
+        </form>
+    </div>
+    
+    <div>
+        <h1>Update Deal</h1>
+        <form method="post", action="{{url_for('update_deal_route')}}">
+            <input name="deal_id" placeholder="Deal ID to Update">
+            <input name="title" placeholder="New Title">
+            <input name="amount" placeholder="New Amount">
+            <input name="stage" placeholder="New Stage">
+            <input name="expected_close_date" placeholder="New Close Date">
+            <input name="contact_id" placeholder="New Contact ID">
+            <input name="user_id" placeholder="New User ID">
+            <button type="submit">Update</button>
+        </form>
+    </div>
+
+    <div>
+        <h1>Delete Deal</h1>
+        <form method="post", action="{{url_for('delete_deal_route')}}">
+            <input name="deal_id" placeholder="Deal ID to Delete">
+            <button type="submit">Delete</button>
+        </form>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul style="color:red;">
+                {% for msg in messages %}
+                    <li>{{ msg }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <div class="pagination">
+        {% if page > 1 %}
+          <a href="{{ url_for('deals', page=page-1, q=query) }}">Previous</a>
+        {% endif %}
+      
+        {% if page < total_pages %}
+          <a href="{{ url_for('deals', page=page+1, q=query) }}">Next</a>
+        {% endif %}
+    </div>
+
+    <ul>
+        {% for deal in deals %}
+            <li>
+                ID: {{ deal[0]}} __ 
+                Title: {{ deal[1]}} __
+                Amount: {{ deal[2]}} __
+                Stage: {{ deal[3]}} __
+                Expected Close Date: {{ deal[4]}} __
+                Contact ID: {{ deal[5]}} __
+                User ID: {{ deal[6]}}
+            </li>
+        {% endfor%}    
+    </ul>
+    
+</body>
+</html>

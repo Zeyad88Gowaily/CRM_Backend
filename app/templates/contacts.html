@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{pagetitle}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Contacts</h1>
+
+    <div>
+        <h1>Search Contacts</h1>
+        <form method="get">
+            <input name="q" placeholder="Search">
+            <button type="submit">Search</button>
+            <a href="{{url_for('dashboard')}}">Back</a>
+        </form>
+    </div>
+
+
+    <div>
+        <h1>Create Contact</h1>
+        <form method="post">
+            <input name="name" placeholder="Name">
+            <input name="phone" placeholder="Phone">
+            <input name="email" placeholder="Email">
+            <input name="company_id" placeholder="Company ID">
+            <input name="notes" placeholder="Notes">
+            <button type="submit">Create</button>
+        </form>
+    </div>
+
+    <div>
+        <h1>Update Contact</h1>
+        <form method="post" action="{{url_for('update_contact_route')}}">
+            <input name="contact_id" placeholder="Contact ID to Update">
+            <input name="name" placeholder="Name">
+            <input name="phone" placeholder="Phone">
+            <input name="email" placeholder="Email">
+            <input name="company_id" placeholder="Company ID">
+            <input name="notes" placeholder="Notes">
+            <button type="submit">Update</button>
+        </form>
+    </div>
+
+    <div>
+        <h1>Delete Contact</h1>
+        <form method="post" action="{{url_for('delete_contact_route')}}">
+            <input name="contact_id" placeholder="Contact ID to Delete">
+            <button type="submit">Delete</button>
+        </form>
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul style="color:red;">
+                {% for msg in messages %}
+                    <li>{{ msg }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
+    <div class="pagination">
+        {% if page > 1 %}
+          <a href="{{ url_for('contacts', page=page-1, q=query) }}">Previous</a>
+        {% endif %}
+      
+        {% if page < total_pages %}
+          <a href="{{ url_for('contacts', page=page+1, q=query) }}">Next</a>
+        {% endif %}
+    </div>
+      
+
+    <ul>
+        {% for contact in contacts %}
+            <li>
+                ID: {{ contact[0]}} __
+                Name: {{ contact[1]}} __
+                Phone: {{ contact[2]}} __
+                Email: {{ contact[3]}} __
+                Company ID: {{ contact[4]}} __
+                Notes: {{ contact[5]}}
+            </li>
+        {% endfor%}    
+    </ul>
+    
+</body>
+</html>
