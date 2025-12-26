@@ -1,5 +1,26 @@
 from .db import get_connection # get_connection to work on the DB conn
 from datetime import datetime
+from flask_login import UserMixin, current_user
+
+##########################################################################################
+class User(UserMixin):
+    def __init__(self, id, username, email, hashed_pass, created_at):
+        self.id = id
+        self.username = username
+        self.email = email
+        self.hashed_pass = hashed_pass
+        self.created_at = created_at
+
+    @staticmethod
+    def get_by_id(user_id):
+        conn = get_connection()
+        cursor = conn.cursor()
+        row = cursor.execute("SELECT * FROM users WHERE ID = ?", (user_id,)).fetchone()
+        conn.close()
+        if row:
+            return User(*row)
+        return None
+##########################################################################################    
 
 # User Table CRUD 
 # CREATE
@@ -20,6 +41,15 @@ def read_user():
     conn=get_connection()
     cursor=conn.cursor()
     Data=cursor.execute("""SELECT * FROM users""").fetchall() 
+    conn.close()
+    
+    return Data
+
+# ADDED Phase 3
+def read_user_byUsername(username):
+    conn=get_connection()
+    cursor=conn.cursor()
+    Data=cursor.execute("""SELECT * FROM users WHERE username=?""",(username,)).fetchone() #
     conn.close()
     
     return Data
@@ -61,8 +91,12 @@ def delete_user(user_ID):
 def create_company(name,industry,address):  
     conn=get_connection()
     cursor=conn.cursor()
-    cursor.execute("""INSERT INTO companies (name,industry,address) VALUES (?,?,?)""",
-                                             (name,industry,address))
+    created_at= datetime.now()
+    updated_at= datetime.now()
+    created_by= current_user.id
+    updated_by= current_user.id
+    cursor.execute("""INSERT INTO companies (name,industry,address,created_at,updated_at,created_by,updated_by) VALUES (?,?,?,?,?,?,?)""",
+                                             (name,industry,address,created_at,updated_at,created_by,updated_by))
     conn.commit()
     company_ID=cursor.lastrowid
     conn.close()
@@ -91,8 +125,10 @@ def read_company_byID(company_ID):
 def update_company(name,industry,address,company_ID):  
     conn=get_connection()
     cursor=conn.cursor()
-    cursor.execute("""UPDATE companies SET name = ?, industry = ?, address = ? WHERE ID = ?""",
-                                                    (name,industry,address,company_ID))
+    updated_at= datetime.now()
+    updated_by= current_user.id
+    cursor.execute("""UPDATE companies SET name = ?, industry = ?, address = ?, updated_at = ?,updated_by = ? WHERE ID = ?""",
+                                                    (name,industry,address,company_ID,updated_at,updated_by))
     conn.commit()
     conn.close()
     
@@ -115,8 +151,12 @@ def delete_company(company_ID):
 def create_contact(name,phone,email,company_id,notes):  
     conn=get_connection()
     cursor=conn.cursor()
-    cursor.execute("""INSERT INTO contacts (name,phone,email,company_id,notes) VALUES (?,?,?,?,?)""",
-                                            (name,phone,email,company_id,notes))
+    created_at= datetime.now()
+    updated_at= datetime.now()
+    created_by= current_user.id
+    updated_by= current_user.id
+    cursor.execute("""INSERT INTO contacts (name,phone,email,company_id,notes,created_at,updated_at,created_by,updated_by) VALUES (?,?,?,?,?,?,?,?,?)""",
+                                            (name,phone,email,company_id,notes,created_at,updated_at,created_by,updated_by))
     conn.commit()
     contact_ID=cursor.lastrowid
     conn.close()
@@ -155,10 +195,12 @@ def read_contacts_by_company(company_id):
 def update_contact(name,phone,email,company_id,notes,contact_ID):  
     conn=get_connection()
     cursor=conn.cursor()
+    updated_at= datetime.now()
+    updated_by= current_user.id
     cursor.execute("""UPDATE contacts 
-                   SET name = ?, phone = ?, email = ?, company_id = ?, notes = ? 
+                   SET name = ?, phone = ?, email = ?, company_id = ?, notes = ?, updated_at = ?, updated_by = ? 
                    WHERE ID = ?
-                   """,     (name,phone,email,company_id,notes,contact_ID))
+                   """,     (name,phone,email,company_id,notes,contact_ID,updated_at,updated_by))
     conn.commit()
     conn.close()
     
@@ -181,8 +223,13 @@ def delete_contact(contact_ID):
 def create_deal(title,amount,stage,expected_close_date,contact_id,user_id):    
     conn=get_connection()
     cursor=conn.cursor()
-    cursor.execute("""INSERT INTO deals (title,amount,stage,expected_close_date,contact_id,user_id) 
-                   VALUES (?,?,?,?,?,?)""",(title,amount,stage,expected_close_date,contact_id,user_id))
+    created_at= datetime.now()
+    updated_at= datetime.now()
+    created_by= current_user.id
+    updated_by= current_user.id
+    
+    cursor.execute("""INSERT INTO deals (title,amount,stage,expected_close_date,contact_id,user_id,created_at,updated_at,created_by,updated_by) 
+                   VALUES (?,?,?,?,?,?,?,?,?,?)""",(title,amount,stage,expected_close_date,contact_id,user_id,created_at,updated_at,created_by,updated_by))
     conn.commit()
     deal_ID=cursor.lastrowid
     conn.close()
@@ -206,6 +253,15 @@ def read_deal_byID(deal_ID):
     conn.close()
     
     return Data
+  
+# ADDED Phase 3    
+def read_deal_userID(user_id):
+    conn=get_connection()
+    cursor=conn.cursor()
+    Data=cursor.execute("""SELECT * FROM deals WHERE user_id=?""",(user_id,)).fetchone() #
+    conn.close()
+        
+    return Data
 
 
 # NEW Added Read Contacts By Company ID  **Phase 2 requirement**
@@ -221,11 +277,13 @@ def read_deals_by_contacts(contact_id):
 def update_deal(title,amount,stage,expected_close_date,contact_id,user_id,deal_ID):  
     conn=get_connection()
     cursor=conn.cursor()
+    updated_at= datetime.now()
+    updated_by= current_user.id
     cursor.execute("""UPDATE deals 
                    SET title = ?, amount = ?, stage = ?, expected_close_date = ?, 
-                   contact_id = ?, user_id = ?
+                   contact_id = ?, user_id = ?, updated_at = ?, updated_by = ?
                    WHERE ID = ?
-                   """,     (title,amount,stage,expected_close_date,contact_id,user_id,deal_ID))
+                   """,     (title,amount,stage,expected_close_date,contact_id,user_id,updated_at,updated_by,deal_ID))
     conn.commit()
     conn.close()
     
@@ -271,6 +329,3 @@ def general_search(table,query):
     
     return Data
                       
-
-
-

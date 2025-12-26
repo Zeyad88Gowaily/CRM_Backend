@@ -9,7 +9,7 @@
 <body>
     <h1>Deals</h1>
     <div>
-        <form method="get">
+        <form method="get">          
             <input name="q" placeholder="Search">
             <button type="submit">Search</button>
             <a href="{{url_for('dashboard')}}">Back</a>
@@ -19,12 +19,14 @@
     <div>
         <h1>Create Deal</h1>
         <form method="post", action="{{url_for('create_deal_route')}}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
             <input name="title" placeholder="Title">
             <input name="amount" placeholder="Amount">
             <input name="stage" placeholder="Stage">
             <input name="expected_close_date" placeholder="Close Date">
             <input name="contact_id" placeholder="Contact ID">
-            <input name="user_id" placeholder="User ID">
+            <!---<input name="user_id" placeholder="User ID">--->
             <button type="submit">Create</button>
         </form>
     </div>
@@ -32,13 +34,15 @@
     <div>
         <h1>Update Deal</h1>
         <form method="post", action="{{url_for('update_deal_route')}}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
             <input name="deal_id" placeholder="Deal ID to Update">
             <input name="title" placeholder="New Title">
             <input name="amount" placeholder="New Amount">
             <input name="stage" placeholder="New Stage">
             <input name="expected_close_date" placeholder="New Close Date">
             <input name="contact_id" placeholder="New Contact ID">
-            <input name="user_id" placeholder="New User ID">
+            <!----<input name="user_id" placeholder="New User ID">--->
             <button type="submit">Update</button>
         </form>
     </div>
@@ -46,6 +50,8 @@
     <div>
         <h1>Delete Deal</h1>
         <form method="post", action="{{url_for('delete_deal_route')}}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
             <input name="deal_id" placeholder="Deal ID to Delete">
             <button type="submit">Delete</button>
         </form>
@@ -80,7 +86,11 @@
                 Stage: {{ deal[3]}} __
                 Expected Close Date: {{ deal[4]}} __
                 Contact ID: {{ deal[5]}} __
-                User ID: {{ deal[6]}}
+                User ID: {{ deal[6]}} __
+                Created At: {{ deal[7]}} __
+                Updated At: {{ deal[8]}} __
+                Created_By: {{ deal[9]}} __
+                Updated_By: {{ deal[10]}}
             </li>
         {% endfor%}    
     </ul>

@@ -1,12 +1,14 @@
-from flask import Flask , render_template,request,redirect,url_for,flash
+from flask import Flask, abort, render_template, request,redirect ,url_for ,flash
 from .models import *
 from app.auth import crm_app
 from email_validator import validate_email, EmailNotValidError
+from flask_login import login_required, current_user
 
 
 ''' #################################### CRUD Operations ######################################### '''
 # contacts Table
-@crm_app.route("/dashboard/contacts", methods=["POST"]) # /contacts/create
+@crm_app.route("/dashboard/contacts", methods=["POST"]) 
+@login_required
 def create_contact_route():
         name=request.form.get("name")
         phone=request.form.get("phone")
@@ -39,6 +41,7 @@ def create_contact_route():
  
  # UPDATE BY ID
 @crm_app.route("/dashboard/contacts/update", methods=["POST"])
+@login_required
 def update_contact_route():
     contact_id = request.form.get("contact_id")
     name = request.form.get("name")
@@ -71,6 +74,7 @@ def update_contact_route():
     
 # DELETE BY ID    
 @crm_app.route("/dashboard/contacts/delete", methods=["POST"])    
+@login_required
 def delete_contact_route():
     contact_id = request.form.get("contact_id")
     
@@ -97,7 +101,8 @@ def delete_contact_route():
 
 ########################################## COMPANIES ##############################################
 
-@crm_app.route("/dashboard/companies", methods=["POST"]) # /companies/create       
+@crm_app.route("/dashboard/companies", methods=["POST"])       
+@login_required
 def create_company_route():
         name=request.form.get("name")
         industry=request.form.get("industry")
@@ -115,7 +120,9 @@ def create_company_route():
     
 # UPDATE BY ID    
 @crm_app.route("/dashboard/companies/update", methods=["POST"])
+@login_required
 def update_company_route():
+    # try except here for company_id conversion
     company_id = request.form.get("company_id")
     name = request.form.get("name")
     industry = request.form.get("industry")
@@ -125,7 +132,7 @@ def update_company_route():
         flash("All Fields Are Required..")
         return redirect(url_for("companies"))
     
-    try: # Type Cast to int
+    try:
         company_id = int(company_id)
     except ValueError:
         flash("Company ID must be a number.")
@@ -143,6 +150,7 @@ def update_company_route():
 
 # DELETE BY ID
 @crm_app.route("/dashboard/companies/delete", methods=["POST"])
+@login_required
 def delete_company_route():
     company_id = request.form.get("company_id")
     
@@ -167,51 +175,55 @@ def delete_company_route():
                 
 ############################################## DEALS ##############################################
 
-@crm_app.route("/dashboard/deals", methods=["POST"]) # /deals/create
+@crm_app.route("/dashboard/deals/create", methods=["POST"])
+@login_required
 def create_deal_route():
         title=request.form.get("title")
         amount=request.form.get("amount")
         stage=request.form.get("stage")
         close_date=request.form.get("expected_close_date")
         contactID=request.form.get("contact_id")
-        userID=request.form.get("user_id")
+        userID=current_user.id # Use current_user.id for userID
+        #userID=request.form.get("user_id")
         
         
-        if not title or not amount or not stage or not close_date or not contactID or not userID:
+        if not title or not amount or not stage or not close_date or not contactID: #or not userID:
             flash("All Fields Are Required..")
             return redirect(url_for("deals"))
         
-        try: 
+        try:
             amount = float(amount)
             contactID = int(contactID)
-            userID = int(userID)
+            #userID = int(userID)
         except ValueError:
-            flash("Amount must be a number. Contact ID and User ID must be integers.")
+            flash("Amount must be a number. Contact ID must be an integer.") 
             return redirect(url_for("deals"))
         
         # Validate Foreign Keys
         contact=read_contact_byID(contactID)
-        user=read_user_byID(userID)
-        if not contact or not user:
-            flash("Invalid Contact ID or User ID.")
+        #user=read_user_byID(userID)
+        
+        if not contact: # or not user:
+            flash("Invalid Contact ID.")
             return redirect(url_for("deals"))
         
-        create_deal(title,amount,stage,close_date,contactID,userID)
+        create_deal(title,amount,stage,close_date,contactID,userID) # Ensure to use current_user.id for userID
         
         flash("Deal Created Successfully.")
         return redirect(url_for("deals"))
     
 @crm_app.route("/dashboard/deals/update", methods=["POST"])
+@login_required
 def update_deal_route():
-    deal_id = request.form.get("deal_id")
-    title = request.form.get("title")
-    amount = request.form.get("amount")
-    stage = request.form.get("stage")
-    close_date = request.form.get("expected_close_date")
-    contactID = request.form.get("contact_id")
-    userID = request.form.get("user_id")
+    deal_id =request.form.get("deal_id")
+    title =request.form.get("title")
+    amount =request.form.get("amount")
+    stage =request.form.get("stage")
+    close_date =request.form.get("expected_close_date")
+    contactID =request.form.get("contact_id")
+    userID = current_user.id # Use current_user.id for userID
     
-    if not deal_id or not title or not amount or not stage or not close_date or not contactID or not userID:
+    if not deal_id or not title or not amount or not stage or not close_date or not contactID: #or not userID:
         flash("All Fields Are Required..")
         return redirect(url_for("deals"))
     
@@ -219,21 +231,23 @@ def update_deal_route():
         deal_id = int(deal_id)
         amount = float(amount)
         contactID = int(contactID)
-        userID = int(userID)
+        #userID = int(userID)
     except ValueError:
-        flash("Deal ID, Contact ID, and User ID must be integers. Amount must be a number.")
+        flash("Deal ID and Contact ID must be integers. Amount must be a number.")
         return redirect(url_for("deals"))
     
+     # Validate Foreign Keys
+    
     deal = read_deal_byID(deal_id)
-    if not deal:
-        flash(f"No deal found with ID {deal_id}")
-        return redirect(url_for("deals"))
+    if deal['user_id'] != current_user.id: #UPDATED FOR AUTHORIZATION
+        abort(403)  # Forbidden Access
     
     update_deal(title, amount, stage, close_date, contactID, userID, deal_id)
     flash("Deal Updated Successfully.")
     return redirect(url_for("deals"))
 
 @crm_app.route("/dashboard/deals/delete", methods=["POST"])
+@login_required
 def delete_deal_route():
     deal_id = request.form.get("deal_id")
     
@@ -247,10 +261,13 @@ def delete_deal_route():
         flash("Deal ID must be a number.")
         return redirect(url_for("deals"))
     
-    deal = read_deal_byID(deal_id)
-    if not deal:
-        flash(f"No deal found with ID {deal_id}")
-        return redirect(url_for("deals"))
+    check_deal=read_deal_byID(deal_id)
+    if not check_deal:
+        abort(404)  # Deal Not Found
+    
+    deal = read_deal_userID(deal_id)
+    if deal['user_id'] != current_user.id:
+        abort(403)  # Forbidden Access
     
     delete_deal(deal_id)
     flash("Deal Deleted Successfully.")
@@ -259,6 +276,7 @@ def delete_deal_route():
 #################################### Listing (SEARCH) #########################################
 # Users
 @crm_app.route("/dashboard/users")
+@login_required
 def users():
     q = request.args.get("q") # search query
     page = int(request.args.get("page", 1)) # pagination default page 1 
@@ -279,6 +297,7 @@ def users():
 
 # Contacts
 @crm_app.route("/dashboard/contacts")
+@login_required
 def contacts():
     q = request.args.get("q")
     page = int(request.args.get("page", 1)) # pagination default page 1 
@@ -299,6 +318,7 @@ def contacts():
 
 # Companies
 @crm_app.route("/dashboard/companies")
+@login_required
 def companies():
     q = request.args.get("q")
     page = int(request.args.get("page", 1)) # pagination default page 1 
@@ -319,14 +339,16 @@ def companies():
 
 # deals
 @crm_app.route("/dashboard/deals")
+@login_required
 def deals():
     q = request.args.get("q")
     page = int(request.args.get("page", 1)) # pagination default page 1 
     per_page = 5 # records per page
+    
     if q:
         Data = general_search("deals",q)
     else:
-        Data = read_deal()
+        Data = read_deal_userID(current_user.id)
         
     total_pages=(len(Data)+per_page-1)//per_page # TOTAL PAGES
     start=(page-1)*per_page

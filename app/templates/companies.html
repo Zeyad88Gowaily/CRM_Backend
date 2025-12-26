@@ -21,6 +21,8 @@
     <div>
         <h1>Create Company</h1>
         <form method="post" action="{{url_for('create_company_route')}}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
             <input name="name" placeholder="Name">
             <input name="industry" placeholder="Industry">
             <input name="address" placeholder="Address">
@@ -32,6 +34,8 @@
     <div>
         <h1>Update Company</h1>
         <form method="post" action="{{url_for('update_company_route')}}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
             <input name="company_id" placeholder="Company ID to Update">
             <input name="name" placeholder="Name">
             <input name="industry" placeholder="Industry">
@@ -43,6 +47,8 @@
     <div>
         <h1>Delete Company</h1>
         <form method="post" action="{{url_for('delete_company_route')}}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            
             <input name="company_id" placeholder="Company ID to Delete">
             <button type="submit">Delete</button>
         </form>
@@ -64,7 +70,11 @@
                 ID: {{ company[0]}} __ 
                 Name: {{ company[1]}} __ 
                 Industry: {{ company[2]}} __ 
-                Address: {{ company[3]}}
+                Address: {{ company[3]}} __
+                Created At: {{ company[4]}} __
+                Updated At: {{ company[5]}} __
+                Created_By: {{ company[6]}} __
+                Updated_By: {{ company[7]}}
             </li>
         {% endfor%}    
     </ul>

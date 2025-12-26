@@ -11,7 +11,7 @@
 
     <div>
         <h1>Search Contacts</h1>
-        <form method="get">
+        <form method="get">        
             <input name="q" placeholder="Search">
             <button type="submit">Search</button>
             <a href="{{url_for('dashboard')}}">Back</a>
@@ -22,6 +22,8 @@
     <div>
         <h1>Create Contact</h1>
         <form method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
             <input name="name" placeholder="Name">
             <input name="phone" placeholder="Phone">
             <input name="email" placeholder="Email">
@@ -34,6 +36,8 @@
     <div>
         <h1>Update Contact</h1>
         <form method="post" action="{{url_for('update_contact_route')}}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
             <input name="contact_id" placeholder="Contact ID to Update">
             <input name="name" placeholder="Name">
             <input name="phone" placeholder="Phone">
@@ -81,7 +85,11 @@
                 Phone: {{ contact[2]}} __
                 Email: {{ contact[3]}} __
                 Company ID: {{ contact[4]}} __
-                Notes: {{ contact[5]}}
+                Notes: {{ contact[5]}} __
+                Created At: {{ contact[6] }} __
+                Updated At: {{ contact[7] }} __
+                Created By: {{ contact[8] }} __
+                Updated By: {{ contact[9] }}
             </li>
         {% endfor%}    
     </ul>

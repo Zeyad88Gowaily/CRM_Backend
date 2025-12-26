@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS users(
+CREATE TABLE users(
     id INTEGER PRIMARY KEY ,
     username TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
@@ -6,14 +6,14 @@ CREATE TABLE IF NOT EXISTS users(
     created_at TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS companies(
+CREATE TABLE companies(
     id INTEGER PRIMARY KEY,
     [name] TEXT NOT NULL,
     industry TEXT ,
     [address] TEXT
 );
 
-CREATE TABLE IF NOT EXISTS contacts(
+CREATE TABLE contacts(
     id INTEGER PRIMARY KEY,
     [name] TEXT NOT NULL,
     phone TEXT,
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS contacts(
     FOREIGN KEY (company_id) REFERENCES companies(id)
 );
 
-CREATE TABLE IF NOT EXISTS deals(
+CREATE TABLE deals(
     id INTEGER PRIMARY KEY,
     title TEXT NOT NULL,
     amount REAL,
@@ -37,3 +37,19 @@ CREATE TABLE IF NOT EXISTS deals(
     FOREIGN KEY (user_id) REFERENCES users(id)
     
 );
+
+
+"""ALTER TABLE deals ADD COLUMN created_at TEXT;
+ALTER TABLE deals ADD COLUMN updated_at TEXT;
+ALTER TABLE deals ADD COLUMN created_by INTEGER;
+ALTER TABLE deals ADD COLUMN updated_by INTEGER;
+
+ALTER TABLE contacts ADD COLUMN created_at TEXT;
+ALTER TABLE contacts ADD COLUMN updated_at TEXT;
+ALTER TABLE contacts ADD COLUMN created_by INTEGER;
+ALTER TABLE contacts ADD COLUMN updated_by INTEGER;
+
+ALTER TABLE companies ADD COLUMN created_at TEXT;
+ALTER TABLE companies ADD COLUMN updated_at TEXT;
+ALTER TABLE companies ADD COLUMN created_by INTEGER;
+ALTER TABLE companies ADD COLUMN updated_by INTEGER;"""

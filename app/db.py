@@ -22,6 +22,36 @@ def init_db():
     else:
         print("Database Already Exists")    
         
+
+
+"""conn = get_connection()
+cursor = conn.cursor()
+
+audit_columns = [
+        ('companies', 'created_at', 'TEXT'),
+        ('companies', 'updated_at', 'TEXT'),
+        ('companies', 'created_by', 'INTEGER'),
+        ('companies', 'updated_by', 'INTEGER'),
+        ('contacts', 'created_at', 'TEXT'),
+        ('contacts', 'updated_at', 'TEXT'),
+        ('contacts', 'created_by', 'INTEGER'),
+        ('contacts', 'updated_by', 'INTEGER'),
+        ('deals', 'created_at', 'TEXT'),
+        ('deals', 'updated_at', 'TEXT'),
+        ('deals', 'created_by', 'INTEGER'),
+        ('deals', 'updated_by', 'INTEGER')
+    ]
+
+for table, col, col_type in audit_columns:
+        try:
+            cursor.execute(f"ALTER TABLE {table} ADD COLUMN {col} {col_type}")
+        except Exception:
+            pass
+
+conn.commit()
+conn.close()
+print("Schema updated successfully without dropping tables")"""        
+        
 print("DONE")        
         
 

@@ -19,6 +19,8 @@
 
     <h1>Register</h1>
     <form method="POST" action="{{url_for('register')}}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"> <!--CSRF Token-->
+        
         <input name="username" placeholder="Username"><br> <!--username-->
         <input name="email" type="email" placeholder="Email"><br> <!--email-->
         <input name="password" type="password" placeholder="Password"> <!--passwrod-->
